@@ -2,7 +2,6 @@ const utils = require('./utils');
 
 const transformFromSheetByRange =       (sheet, startIndex, count, parser)              => {
     let result = [];
-    console.log(sheet, startIndex, count, parser);
     for (let r = startIndex; r < startIndex + count; r++) {
         result.push(parser(sheet.getRow(r)));
     }
@@ -22,7 +21,7 @@ const transformFromSheetByRangeWithCreatorAndSetters =  (sheet, startIndex, coun
     for (let r = startIndex; r < startIndex + count; r++) {
         let row = sheet.getRow(r);
         let obj = creator();
-        for (let i = 0; i < row.cols; i++) {
+        for (let i = 0; i < row.columns; i++) {
             if (setters[i]) {
                 setters[i](obj, row.cells[i]);
             }
@@ -43,8 +42,6 @@ const transformFromExcelByStartWithCreatorAndSetters =  (sheetIndex, excel, star
 const transformFromExcelByRangeWithCreatorAndSetters =  (sheetIndex, excel, startIndex, count, creator, ...setters) => transformFromSheetByRangeWithCreatorAndSetters(utils.getSheet(excel, sheetIndex), startIndex, count, creator, ...setters);
 
 const transform = (...args) => {
-    console.log(args);
-
     if (args[0] instanceof utils.Sheet) {
         let lastFunctionIndex = args.slice(1).findIndex(arg => utils.isFunction(arg)) + 1;
         if (args.length - lastFunctionIndex > 1) {

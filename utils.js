@@ -5,7 +5,8 @@ const words = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 const isString = value => typeof value === 'string' || value instanceof String;
 const isFunction = value => typeof value === 'function' || value instanceof Function;
-const parseColIndex = value => {
+const isBoolean = value => typeof value === 'boolean' || value instanceof Boolean;
+const parseColumnIndex = value => {
     value = value.split('');
     let result = 0;
     for (let i = 0; i < value.length; i++) {
@@ -20,7 +21,7 @@ const parseColIndex = value => {
 const parseRowIndex = value => parseInt(value);
 const parseCellIndex = value => ({
     row: parseRowIndex(value.replace(/^[A-Z]+/ig, '')),
-    col: parseColIndex(value.replace(/[0-9]+$/ig, ''))
+    column: parseColumnIndex(value.replace(/[0-9]+$/ig, ''))
 });
 const parseRangeIndex = value => {
     value = value.split(':');
@@ -29,7 +30,7 @@ const parseRangeIndex = value => {
         end: parseCellIndex(value[1])
     };
 };
-const formatColIndex = index => {
+const formatColumnIndex = index => {
     let result = '';
     do {
         result = words[index % words.length] + result;
@@ -38,11 +39,18 @@ const formatColIndex = index => {
     return result;
 };
 const formatRowIndex = index => index;
-const formatCellIndex = (rowIndex, cellIndex) => formatColIndex(cellIndex) + formatRowIndex(rowIndex);
+const formatCellIndex = (rowIndex, cellIndex) => formatColumnIndex(cellIndex) + formatRowIndex(rowIndex);
 
 class ExcelError extends Error {
     constructor(message) {
         super(message);
+    }
+}
+class ExcelValueFormatError extends ExcelError {
+    constructor(rowIndex, columnIndex, message) {
+        super(`单元格格式错误[${formatCellIndex(rowIndex, columnIndex)}]:${message instanceof Error ? message.message : message}`);
+        this.rowIndex = rowIndex;
+        this.columnIndex = columnIndex;
     }
 }
 
@@ -60,21 +68,20 @@ class Sheet {
     }
     get rows() {
         let range = parseRangeIndex(this.delegate['!ref']);
-        console.log(range);
         return range.end.row;
     }
-    get cols() {
+    get columns() {
         let range = parseRangeIndex(this.delegate['!ref']);
-        return range.end.col + 1;
+        return range.end.column + 1;
     }
-    getCell(rowIndex, colIndex) {
-        return new Cell(this.delegate[formatCellIndex(rowIndex + 1, colIndex)], rowIndex, colIndex, this);
+    getCell(rowIndex, columnIndex) {
+        return new Cell(this.delegate[formatCellIndex(rowIndex + 1, columnIndex)], rowIndex, columnIndex, this);
     }
     getRow(rowIndex) {
-        return new Row(new Array(this.cols).fill(false).map((v, i) => this.getCell(rowIndex, i)), rowIndex, this);
+        return new Row(new Array(this.columns).fill(false).map((v, i) => this.getCell(rowIndex, i)), rowIndex, this);
     }
-    getCol(colIndex) {
-        return new Col(new Array(this.rows).fill(false).map((v, i) => this.getCell(i, colIndex)), colIndex, this);
+    getColumn(columnIndex) {
+        return new Column(new Array(this.rows).fill(false).map((v, i) => this.getCell(i, columnIndex)), columnIndex, this);
     }
 }
 class Row {
@@ -83,14 +90,14 @@ class Row {
         this.index = index;
         this.sheet = sheet;
     }
-    getCell(colIndex) {
-        return this.cells[colIndex];
+    getCell(columnIndex) {
+        return this.cells[columnIndex];
     }
-    get cols() {
-        return this.sheet.cols;
+    get columns() {
+        return this.sheet.columns;
     }
 }
-class Col {
+class Column {
     constructor(cells, index, sheet) {
         this.cells = cells;
         this.index = index;
@@ -104,20 +111,23 @@ class Col {
     }
 }
 class Cell {
-    constructor(delegate, rowIndex, colIndex, sheet) {
+    constructor(delegate, rowIndex, columnIndex, sheet) {
         this.delegate = delegate;
         this.rowIndex = rowIndex;
-        this.colIndex = colIndex;
+        this.columnIndex = columnIndex;
         this.sheet = sheet;
     }
     get value() {
         return this.delegate ? this.delegate.w : null;
     }
+    get dateValue() {
+        return this.delegate ? this.delegate.d : null;
+    }
     get row() {
         return this.sheet.getRow(this.rowIndex);
     }
-    get col() {
-        return this.sheet.getCol(this.colIndex);
+    get column() {
+        return this.sheet.getColumn(this.columnIndex);
     }
 }
 
@@ -128,15 +138,24 @@ const getExcel = (excel) => {
     if (excel instanceof Excel) {
         return excel;
     } else if (isString(excel)) {
-        return new Excel(xlsx.readFile(excel, { }));
+        return new Excel(xlsx.readFile(excel, {
+            cellDates: true,
+        }));
     } else {
         return new Excel(excel);
     }
 }
 
+const defaultCreator = t => t;
+const defaultSetter = (t, p) => { };
+const defaultPropertySetter = setter => (t, p, v, r, c) => setter(p, v, r, c);
+const defaultValidator = required => (t, p, v, r, c) => required && v == null ? new ExcelValueFormatError(r, c, "Can not be null") : null;
+
+
 module.exports = {
     isString,
     isFunction,
+    isBoolean,
 
     getSheet,
     getExcel,
@@ -144,5 +163,13 @@ module.exports = {
     Excel,
     Sheet,
 
-    ExcelError
+    ExcelError,
+    ExcelValueFormatError,
+
+    defaultCreator,
+    defaultSetter,
+    defaultValidator,
+    defaultPropertySetter,
+
+    DEFAULT_REQUIRED: true
 }

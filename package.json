@@ -17,6 +17,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "moment": "^2.25.3",
     "xlsx": "^0.16.0"
   }
 }
