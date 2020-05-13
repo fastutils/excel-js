@@ -1,0 +1,22 @@
+{
+  "name": "@utils/excel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "keywords": [
+    "excel",
+    "xlsx",
+    "xls",
+    "utils",
+    "export",
+    "import"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "xlsx": "^0.16.0"
+  }
+}
