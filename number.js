@@ -2,19 +2,19 @@ const utils = require('./utils');
 const PropertyInfo = require('./property');
 
 const forNumberByIndexAndSetter =                                 (column, setter) => forNumberByIndexAndSetterAndRequired(column, setter, utils.DEFAULT_REQUIRED);
-const forNumberByIndexAndSetterAndRequired =                      (column, setter, required) => forNumberByIndexAndSetterAndValidator(column, setter, utils.defaultValidator(required));
-const forNumberByIndexAndSetterAndValidator =                     (column, setter, validator) => forNumberByRangeAndSetterAndValidator(column, column, setter, validator);
+const forNumberByIndexAndSetterAndRequired =                      (column, setter, required) => forNumberByIndexAndSetterAndValidator(column, setter, utils.defaultPropertyRequiredValidator(required));
+const forNumberByIndexAndSetterAndValidator =                     (column, setter, validator) => forNumberByRangeAndSetterAndValidator(column, column, setter, utils.defaultPropertyValidator(validator));
 
 const forNumberByRangeAndSetter =                                 (minColumn, maxColumn, setter) => forNumberByRangeAndSetterAndRequired(minColumn, maxColumn, setter, utils.DEFAULT_REQUIRED);
-const forNumberByRangeAndSetterAndRequired =                      (minColumn, maxColumn, setter, required) => forNumberByRangeAndSetterAndValidator(minColumn, maxColumn, setter, utils.defaultValidator(required));
-const forNumberByRangeAndSetterAndValidator =                     (minColumn, maxColumn, setter, validator) => forNumberByRangeAndCreatorAndReaderAndSetterAndValidator(minColumn, maxColumn, utils.defaultCreator, utils.defaultPropertySetter(setter), utils.defaultSetter, validator);
+const forNumberByRangeAndSetterAndRequired =                      (minColumn, maxColumn, setter, required) => forNumberByRangeAndSetterAndValidator(minColumn, maxColumn, setter, utils.defaultPropertyRequiredValidator(required));
+const forNumberByRangeAndSetterAndValidator =                     (minColumn, maxColumn, setter, validator) => forNumberByRangeAndCreatorAndReaderAndSetterAndValidator(minColumn, maxColumn, utils.defaultCreator, utils.defaultPropertySetter(setter), utils.defaultSetter, utils.defaultPropertyValidator(validator));
 
 const forNumberByIndexAndCreatorAndReaderAndSetter =              (column, creator, reader, setter) => forNumberByIndexAndCreatorAndReaderAndSetterAndRequired(column, creator, reader, setter, utils.DEFAULT_REQUIRED);
-const forNumberByIndexAndCreatorAndReaderAndSetterAndRequired =   (column, creator, reader, setter, required) => forNumberByIndexAndCreatorAndReaderAndSetterAndValidator(column, creator, reader, setter, utils.defaultValidator(required));
+const forNumberByIndexAndCreatorAndReaderAndSetterAndRequired =   (column, creator, reader, setter, required) => forNumberByIndexAndCreatorAndReaderAndSetterAndValidator(column, creator, reader, setter, utils.defaultRequiredValidator(required));
 const forNumberByIndexAndCreatorAndReaderAndSetterAndValidator =  (column, creator, reader, setter, validator) => forNumberByRangeAndCreatorAndReaderAndSetterAndValidator(column, column, creator, reader, setter, validator);
 
 const forNumberByRangeAndCreatorAndReaderAndSetter =              (minColumn, maxColumn, creator, reader, setter) => forNumberByRangeAndCreatorAndReaderAndSetterAndRequired(minColumn, maxColumn, creator, reader, setter, utils.DEFAULT_REQUIRED);
-const forNumberByRangeAndCreatorAndReaderAndSetterAndRequired =   (minColumn, maxColumn, creator, reader, setter, required) => forNumberByRangeAndCreatorAndReaderAndSetterAndValidator(minColumn, maxColumn, creator, reader, setter, utils.defaultValidator(required));
+const forNumberByRangeAndCreatorAndReaderAndSetterAndRequired =   (minColumn, maxColumn, creator, reader, setter, required) => forNumberByRangeAndCreatorAndReaderAndSetterAndValidator(minColumn, maxColumn, creator, reader, setter, utils.defaultRequiredValidator(required));
 const forNumberByRangeAndCreatorAndReaderAndSetterAndValidator =  (minColumn, maxColumn, creator, reader, setter, validator) => {
     return new PropertyInfo(minColumn, maxColumn, cell => {
         if (cell.value === 'NaN') {

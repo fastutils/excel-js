@@ -3,19 +3,19 @@ const PropertyInfo = require('./property');
 const moment = require('moment');
 
 const forDateByIndexAndSetter =                                 (column, setter) => forDateByIndexAndSetterAndRequired(column, setter, utils.DEFAULT_REQUIRED);
-const forDateByIndexAndSetterAndRequired =                      (column, setter, required) => forDateByIndexAndSetterAndValidator(column, setter, utils.defaultValidator(required));
-const forDateByIndexAndSetterAndValidator =                     (column, setter, validator) => forDateByRangeAndSetterAndValidator(column, column, setter, validator);
+const forDateByIndexAndSetterAndRequired =                      (column, setter, required) => forDateByIndexAndSetterAndValidator(column, setter, utils.defaultPropertyRequiredValidator(required));
+const forDateByIndexAndSetterAndValidator =                     (column, setter, validator) => forDateByRangeAndSetterAndValidator(column, column, setter, utils.defaultPropertyValidator(validator));
 
 const forDateByRangeAndSetter =                                 (minColumn, maxColumn, setter) => forDateByRangeAndSetterAndRequired(minColumn, maxColumn, setter, utils.DEFAULT_REQUIRED);
-const forDateByRangeAndSetterAndRequired =                      (minColumn, maxColumn, setter, required) => forDateByRangeAndSetterAndValidator(minColumn, maxColumn, setter, utils.defaultValidator(required));
-const forDateByRangeAndSetterAndValidator =                     (minColumn, maxColumn, setter, validator) => forDateByRangeAndCreatorAndReaderAndSetterAndValidator(minColumn, maxColumn, utils.defaultCreator, utils.defaultPropertySetter(setter), utils.defaultSetter, validator);
+const forDateByRangeAndSetterAndRequired =                      (minColumn, maxColumn, setter, required) => forDateByRangeAndSetterAndValidator(minColumn, maxColumn, setter, utils.defaultPropertyRequiredValidator(required));
+const forDateByRangeAndSetterAndValidator =                     (minColumn, maxColumn, setter, validator) => forDateByRangeAndCreatorAndReaderAndSetterAndValidator(minColumn, maxColumn, utils.defaultCreator, utils.defaultPropertySetter(setter), utils.defaultSetter, utils.defaultPropertyValidator(validator));
 
 const forDateByIndexAndCreatorAndReaderAndSetter =              (column, creator, reader, setter) => forDateByIndexAndCreatorAndReaderAndSetterAndRequired(column, creator, reader, setter, utils.DEFAULT_REQUIRED);
-const forDateByIndexAndCreatorAndReaderAndSetterAndRequired =   (column, creator, reader, setter, required) => forDateByIndexAndCreatorAndReaderAndSetterAndValidator(column, creator, reader, setter, utils.defaultValidator(required));
+const forDateByIndexAndCreatorAndReaderAndSetterAndRequired =   (column, creator, reader, setter, required) => forDateByIndexAndCreatorAndReaderAndSetterAndValidator(column, creator, reader, setter, utils.defaultRequiredValidator(required));
 const forDateByIndexAndCreatorAndReaderAndSetterAndValidator =  (column, creator, reader, setter, validator) => forDateByRangeAndCreatorAndReaderAndSetterAndValidator(column, column, creator, reader, setter, validator);
 
 const forDateByRangeAndCreatorAndReaderAndSetter =              (minColumn, maxColumn, creator, reader, setter) => forDateByRangeAndCreatorAndReaderAndSetterAndRequired(minColumn, maxColumn, creator, reader, setter, utils.DEFAULT_REQUIRED);
-const forDateByRangeAndCreatorAndReaderAndSetterAndRequired =   (minColumn, maxColumn, creator, reader, setter, required) => forDateByRangeAndCreatorAndReaderAndSetterAndValidator(minColumn, maxColumn, creator, reader, setter, utils.defaultValidator(required));
+const forDateByRangeAndCreatorAndReaderAndSetterAndRequired =   (minColumn, maxColumn, creator, reader, setter, required) => forDateByRangeAndCreatorAndReaderAndSetterAndValidator(minColumn, maxColumn, creator, reader, setter, utils.defaultRequiredValidator(required));
 const forDateByRangeAndCreatorAndReaderAndSetterAndValidator =  (minColumn, maxColumn, creator, reader, setter, validator) => {
     return new PropertyInfo(minColumn, maxColumn, cell => {
         if (cell.dateValue) {

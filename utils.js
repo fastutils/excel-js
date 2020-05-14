@@ -158,10 +158,11 @@ const getExcel = (excel) => {
 const defaultCreator = t => t;
 const defaultSetter = (t, p) => { };
 const defaultPropertySetter = setter => (t, p, v, r, c) => setter(p, v, r, c);
-const defaultValidator = required => (t, p, v, r, c) => required && v == null ? new ExcelValueFormatError(r, c, "Can not be null") : null;
+const defaultRequiredValidator = required => (t, p, v, r, c) => required && v == null ? new ExcelValueFormatError(r, c, "Can not be null") : null;
+const defaultPropertyValidator = validator => (t, p, v, r, c) => validator(p, v, r, c);
+const defaultPropertyRequiredValidator = required => (p, v, r, c) => required && v == null ? new ExcelValueFormatError(r, c, "Can not be null") : null;
 
-
-module.exports = {
+    module.exports = {
     isString,
     isFunction,
     isBoolean,
@@ -171,6 +172,9 @@ module.exports = {
 
     Excel,
     Sheet,
+    Cell,
+    Row,
+    Column,
 
     ExcelError,
     ExcelValueFormatError,
@@ -178,8 +182,10 @@ module.exports = {
 
     defaultCreator,
     defaultSetter,
-    defaultValidator,
+    defaultRequiredValidator,
     defaultPropertySetter,
+    defaultPropertyValidator,
+    defaultPropertyRequiredValidator,
 
     DEFAULT_REQUIRED: true
 }
