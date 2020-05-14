@@ -15,12 +15,12 @@ class PropertyInfo {
         let minColumn = this.minColumn == null ? 0 : this.minColumn < 0 ? row.cols + this.minColumn : this.minColumn;
         let maxColumn = this.maxColumn == null ? row.cols - 1 : this.maxColumn < 0 ? row.cols + this.maxColumn - 1 : this.maxColumn;
         let property = this.creator(t);
-        for (let colIndex = minColumn; colIndex <= maxColumn; colIndex++) {
-            let cell = row.getCell(colIndex);
+        for (let columnIndex = minColumn; columnIndex <= maxColumn; columnIndex++) {
+            let cell = row.getCell(columnIndex);
             let value = cell == null ? null : this.parser(cell);
-            let exception = this.validator(t, property, value, rowIndex, colIndex);
+            let exception = this.validator(t, property, value, rowIndex, columnIndex);
             if (exception == null) {
-                this.reader(t, property, value, rowIndex, colIndex);
+                this.reader(t, property, value, rowIndex, columnIndex);
             } else {
                 throw exception;
             }

@@ -17,8 +17,10 @@ const forNumberByRangeAndCreatorAndReaderAndSetter =              (minColumn, ma
 const forNumberByRangeAndCreatorAndReaderAndSetterAndRequired =   (minColumn, maxColumn, creator, reader, setter, required) => forNumberByRangeAndCreatorAndReaderAndSetterAndValidator(minColumn, maxColumn, creator, reader, setter, utils.defaultValidator(required));
 const forNumberByRangeAndCreatorAndReaderAndSetterAndValidator =  (minColumn, maxColumn, creator, reader, setter, validator) => {
     return new PropertyInfo(minColumn, maxColumn, cell => {
-        if (isNaN(cell.value)) {
-            throw new utils.ExcelValueFormatError(cell.row, cell.column);
+        if (cell.value === 'NaN') {
+            return NaN;
+        } else if (isNaN(cell.value)) {
+            throw new utils.ExcelValueFormatError(cell.rowIndex, cell.columnIndex, 'value is not a number:' + cell.value);
         } else {
             return parseFloat(cell.value);
         }

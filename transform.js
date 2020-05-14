@@ -3,7 +3,10 @@ const utils = require('./utils');
 const transformFromSheetByRange =       (sheet, startIndex, count, parser)              => {
     let result = [];
     for (let r = startIndex; r < startIndex + count; r++) {
-        result.push(parser(sheet.getRow(r)));
+        let row = sheet.getRow(r);
+        if (row != null) {
+            result.push(parser(row));
+        }
     }
     return result;
 };
@@ -20,13 +23,15 @@ const transformFromSheetByRangeWithCreatorAndSetters =  (sheet, startIndex, coun
     let result = [];
     for (let r = startIndex; r < startIndex + count; r++) {
         let row = sheet.getRow(r);
-        let obj = creator();
-        for (let i = 0; i < row.columns; i++) {
-            if (setters[i]) {
-                setters[i](obj, row.cells[i]);
+        if (row != null) {
+            let obj = creator();
+            for (let i = 0; i < row.columns; i++) {
+                if (setters[i]) {
+                    setters[i](obj, row.cells[i]);
+                }
             }
+            result.push(obj);
         }
-        result.push(obj);
     }
     return result;
 };

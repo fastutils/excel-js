@@ -25,7 +25,7 @@ const forDateByRangeAndCreatorAndReaderAndSetterAndValidator =  (minColumn, maxC
             if (dateValue.isValid()) {
                 return dateValue.toDate();
             } else {
-                throw new utils.ExcelValueFormatError(cell.row, cell.column);
+                throw new utils.ExcelValueFormatError(cell.row, cell.column, 'value is a invalid date or time:' + cell.value);
             }
         }
     }, creator, reader, setter, validator);

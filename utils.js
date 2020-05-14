@@ -48,9 +48,15 @@ class ExcelError extends Error {
 }
 class ExcelValueFormatError extends ExcelError {
     constructor(rowIndex, columnIndex, message) {
-        super(`单元格格式错误[${formatCellIndex(rowIndex, columnIndex)}]:${message instanceof Error ? message.message : message}`);
+        super(`Cell [${formatCellIndex(rowIndex, columnIndex)}] format error:${message instanceof Error ? message.message : message}`);
         this.rowIndex = rowIndex;
         this.columnIndex = columnIndex;
+    }
+}
+class ExcelMultiValueFormatError extends ExcelError {
+    constructor(errors) {
+        super(errors.map(error => error.message).join(','));
+        this.errors = errors;
     }
 }
 
@@ -75,13 +81,16 @@ class Sheet {
         return range.end.column + 1;
     }
     getCell(rowIndex, columnIndex) {
-        return new Cell(this.delegate[formatCellIndex(rowIndex + 1, columnIndex)], rowIndex, columnIndex, this);
+        let delegate = this.delegate[formatCellIndex(rowIndex + 1, columnIndex)];
+        return delegate ? new Cell(delegate, rowIndex, columnIndex, this) : null;
     }
     getRow(rowIndex) {
-        return new Row(new Array(this.columns).fill(false).map((v, i) => this.getCell(rowIndex, i)), rowIndex, this);
+        let cells = new Array(this.columns).fill(false).map((v, i) => this.getCell(rowIndex, i));
+        return cells.some(cell => cell != null) ? new Row(cells, rowIndex, this) : null;
     }
     getColumn(columnIndex) {
-        return new Column(new Array(this.rows).fill(false).map((v, i) => this.getCell(i, columnIndex)), columnIndex, this);
+        let cells = new Array(this.rows).fill(false).map((v, i) => this.getCell(i, columnIndex));
+        return cells.some(cell => cell != null) ? new Column(cells, columnIndex, this) : null;
     }
 }
 class Row {
@@ -165,6 +174,7 @@ module.exports = {
 
     ExcelError,
     ExcelValueFormatError,
+    ExcelMultiValueFormatError,
 
     defaultCreator,
     defaultSetter,
