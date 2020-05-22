@@ -8,6 +8,8 @@ const forString = require('./string');
 const forNumber = require('./number');
 const forDate = require('./date');
 
+const { ExcelError, ExcelValueFormatError, ExcelMultiValueFormatError } = require('./utils.js');
+
 module.exports = {
     transform,
     map,
@@ -18,4 +20,8 @@ module.exports = {
     forString,
     forNumber,
     forDate,
+
+    ExcelError,
+    ExcelValueFormatError,
+    ExcelMultiValueFormatError,
 }

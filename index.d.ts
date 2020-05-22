@@ -1,4 +1,17 @@
 declare namespace Excel {
+    export class ExcelError extends Error {
+
+    }
+
+    export class ExcelValueFormatError extends ExcelError {
+        readonly rowIndex: number;
+        readonly columnIndex: number;
+    }
+
+    export class ExcelMultiValueFormatError extends ExcelError {
+        readonly errors: ExcelValueFormatError[];
+    }
+
     function transform<T>(sheet : Sheet, parser : (row: Row) => T) : T[];
     function transform<T>(sheet : Sheet, startIndex : number, parser : (row: Row) => T) : T[];
     function transform<T>(sheet : Sheet, startIndex : number, count : number, parser : (row: Row) => T) : T[];
@@ -37,6 +50,25 @@ declare namespace Excel {
     function mapCollectErrors<T>(excel : string | Excel, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
     function mapCollectErrors<T>(excel : string | Excel, startIndex : number, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
     function mapCollectErrors<T>(excel : string | Excel, startIndex : number, count : number, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+
+    function mapIgnoreErrors<T>(sheet : Sheet, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(sheet : Sheet, startIndex : number, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(sheet : Sheet, startIndex : number, count : number, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(sheetIndex : number, excel : string | Excel, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(sheetIndex : number, excel : string | Excel, startIndex : number, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(sheetIndex : number, excel : string | Excel, startIndex : number, count : number, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(excel : string | Excel, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(excel : string | Excel, startIndex : number, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(excel : string | Excel, startIndex : number, count : number, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(collectors: ExcelValueFormatError[], sheet : Sheet, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(collectors: ExcelValueFormatError[], sheet : Sheet, startIndex : number, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(collectors: ExcelValueFormatError[], sheet : Sheet, startIndex : number, count : number, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(collectors: ExcelValueFormatError[], sheetIndex : number, excel : string | Excel, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(collectors: ExcelValueFormatError[], sheetIndex : number, excel : string | Excel, startIndex : number, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(collectors: ExcelValueFormatError[], sheetIndex : number, excel : string | Excel, startIndex : number, count : number, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(collectors: ExcelValueFormatError[], excel : string | Excel, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(collectors: ExcelValueFormatError[], excel : string | Excel, startIndex : number, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
+    function mapIgnoreErrors<T>(collectors: ExcelValueFormatError[], excel : string | Excel, startIndex : number, count : number, creator : () => T, ...properties : PropertyInfo<T, any>[]) : T[];
 
     function forDate<T, P>(column : number, setter : (obj : T, value : Date, rowIndex : number, columnIndex : number) => void) : PropertyInfo<T, P>;
     function forDate<T, P>(column : number, setter : (obj : T, value : Date, rowIndex : number, columnIndex : number) => void, required : boolean) : PropertyInfo<T, P>;
