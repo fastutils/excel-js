@@ -1,6 +1,7 @@
 const transform = require('./transform');
 const map = require('./map');
 const mapCollectErrors = require('./mapCollectErrors');
+const mapIgnoreErrors = require('./mapIgnoreErrors');
 const create = require('./create');
 
 const forString = require('./string');
@@ -11,6 +12,7 @@ module.exports = {
     transform,
     map,
     mapCollectErrors,
+    mapIgnoreErrors,
     create,
 
     forString,
