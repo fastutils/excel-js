@@ -66,7 +66,7 @@ const transform = (...args) => {
                 return transformFromSheetByRange(...args);
             }
         }
-    } else if (args[0] instanceof utils.Excel || utils.isString(args[0])) {
+    } else if (args[0] instanceof utils.Excel || utils.isString(args[0]) || utils.isArrayBuffer(args[0])) {
         let lastFunctionIndex = args.slice(1).findIndex(arg => utils.isFunction(arg)) + 1;
         if (args.length - lastFunctionIndex > 1) {
             if (lastFunctionIndex === 1) {

@@ -4,6 +4,7 @@ const fs = require('fs');
 const words = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 const isString = value => typeof value === 'string' || value instanceof String;
+const isArrayBuffer = value => value instanceof ArrayBuffer;
 const isFunction = value => typeof value === 'function' || value instanceof Function;
 const isBoolean = value => typeof value === 'boolean' || value instanceof Boolean;
 const parseColumnIndex = value => {
@@ -146,7 +147,7 @@ const getSheet = (excel, sheetIndex) => {
 const getExcel = (excel) => {
     if (excel instanceof Excel) {
         return excel;
-    } else if (isString(excel)) {
+    } else if (isArrayBuffer(excel) || isString(excel)) {
         return new Excel(xlsx.readFile(excel, {
             cellDates: true,
         }));
@@ -162,8 +163,9 @@ const defaultRequiredValidator = required => (t, p, v, r, c) => required && v ==
 const defaultPropertyValidator = validator => (t, p, v, r, c) => validator(p, v, r, c);
 const defaultPropertyRequiredValidator = required => (p, v, r, c) => required && v == null ? new ExcelValueFormatError(r, c, "Can not be null") : null;
 
-    module.exports = {
+module.exports = {
     isString,
+    isArrayBuffer,
     isFunction,
     isBoolean,
 

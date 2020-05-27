@@ -36,7 +36,7 @@ const map = (...args) => {
         } else if (lastFunctionIndex === 3) {
             return mapSheetByRangeWithCreatorAndProperties(...args);
         }
-    } else if (args[0] instanceof utils.Excel || utils.isString(args[0])) {
+    } else if (args[0] instanceof utils.Excel || utils.isString(args[0]) || utils.isArrayBuffer(args[0])) {
         let lastFunctionIndex = args.slice(1).findIndex(arg => utils.isFunction(arg)) + 1;
         if (lastFunctionIndex === 1) {
             return mapFirstSheetWithCreatorAndProperties(utils.getExcel(args[0]), ...args.slice(1));

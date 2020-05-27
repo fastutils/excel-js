@@ -50,7 +50,7 @@ const mapIgnoreErrors = (...args) => {
             } else if (lastFunctionIndex === 4) {
                 return mapCollectErrorsSheetByRangeWithCreatorAndProperties(...args);
             }
-        } else if (args[1] instanceof utils.Excel || utils.isString(args[1])) {
+        } else if (args[1] instanceof utils.Excel || utils.isString(args[1]) || utils.isArrayBuffer(args[1])) {
             let lastFunctionIndex = args.slice(2).findIndex(arg => utils.isFunction(arg)) + 2;
             if (lastFunctionIndex === 2) {
                 return mapCollectErrorsFirstSheetWithCreatorAndProperties(args[0], utils.getExcel(args[1]), ...args.slice(2));
@@ -78,7 +78,7 @@ const mapIgnoreErrors = (...args) => {
         } else if (lastFunctionIndex === 3) {
             return mapIgnoreErrorsSheetByRangeWithCreatorAndProperties(...args);
         }
-    } else if (args[0] instanceof utils.Excel || utils.isString(args[0])) {
+    } else if (args[0] instanceof utils.Excel || utils.isString(args[0]) || utils.isArrayBuffer(args[0])) {
         let lastFunctionIndex = args.slice(1).findIndex(arg => utils.isFunction(arg)) + 1;
         if (lastFunctionIndex === 1) {
             return mapIgnoreErrorsFirstSheetWithCreatorAndProperties(utils.getExcel(args[0]), ...args.slice(1));
