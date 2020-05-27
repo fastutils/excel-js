@@ -4,7 +4,7 @@ const moment = require('moment');
 
 const forDateByIndexAndSetter =                                 (column, setter) => forDateByIndexAndSetterAndRequired(column, setter, utils.DEFAULT_REQUIRED);
 const forDateByIndexAndSetterAndRequired =                      (column, setter, required) => forDateByIndexAndSetterAndValidator(column, setter, utils.defaultPropertyRequiredValidator(required));
-const forDateByIndexAndSetterAndValidator =                     (column, setter, validator) => forDateByRangeAndSetterAndValidator(column, column, setter, utils.defaultPropertyValidator(validator));
+const forDateByIndexAndSetterAndValidator =                     (column, setter, validator) => forDateByRangeAndCreatorAndReaderAndSetterAndValidator(column, column, utils.defaultCreator, utils.defaultPropertySetter(setter), utils.defaultSetter, utils.defaultPropertyValidator(validator));
 
 const forDateByRangeAndSetter =                                 (minColumn, maxColumn, setter) => forDateByRangeAndSetterAndRequired(minColumn, maxColumn, setter, utils.DEFAULT_REQUIRED);
 const forDateByRangeAndSetterAndRequired =                      (minColumn, maxColumn, setter, required) => forDateByRangeAndSetterAndValidator(minColumn, maxColumn, setter, utils.defaultPropertyRequiredValidator(required));
@@ -25,7 +25,7 @@ const forDateByRangeAndCreatorAndReaderAndSetterAndValidator =  (minColumn, maxC
             if (dateValue.isValid()) {
                 return dateValue.toDate();
             } else {
-                throw new utils.ExcelValueFormatError(cell.row, cell.column, 'value is a invalid date or time:' + cell.value);
+                throw new utils.ExcelValueFormatError(cell.row, cell.column, cell.value, 'value is a invalid date or time:' + cell.value);
             }
         }
     }, creator, reader, setter, validator);

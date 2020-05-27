@@ -3,7 +3,7 @@ const PropertyInfo = require('./property');
 
 const forNumberByIndexAndSetter =                                 (column, setter) => forNumberByIndexAndSetterAndRequired(column, setter, utils.DEFAULT_REQUIRED);
 const forNumberByIndexAndSetterAndRequired =                      (column, setter, required) => forNumberByIndexAndSetterAndValidator(column, setter, utils.defaultPropertyRequiredValidator(required));
-const forNumberByIndexAndSetterAndValidator =                     (column, setter, validator) => forNumberByRangeAndSetterAndValidator(column, column, setter, utils.defaultPropertyValidator(validator));
+const forNumberByIndexAndSetterAndValidator =                     (column, setter, validator) => forNumberByRangeAndCreatorAndReaderAndSetterAndValidator(column, column, utils.defaultCreator, utils.defaultPropertySetter(setter), utils.defaultSetter, utils.defaultPropertyValidator(validator));
 
 const forNumberByRangeAndSetter =                                 (minColumn, maxColumn, setter) => forNumberByRangeAndSetterAndRequired(minColumn, maxColumn, setter, utils.DEFAULT_REQUIRED);
 const forNumberByRangeAndSetterAndRequired =                      (minColumn, maxColumn, setter, required) => forNumberByRangeAndSetterAndValidator(minColumn, maxColumn, setter, utils.defaultPropertyRequiredValidator(required));
@@ -20,7 +20,7 @@ const forNumberByRangeAndCreatorAndReaderAndSetterAndValidator =  (minColumn, ma
         if (cell.value === 'NaN') {
             return NaN;
         } else if (isNaN(cell.value)) {
-            throw new utils.ExcelValueFormatError(cell.rowIndex, cell.columnIndex, 'value is not a number:' + cell.value);
+            throw new utils.ExcelValueFormatError(cell.rowIndex, cell.columnIndex, cell.value, 'value is not a number:' + cell.value);
         } else {
             return parseFloat(cell.value);
         }

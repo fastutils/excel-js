@@ -7,15 +7,19 @@ const mapCollectErrorsSheetByRangeWithCreatorAndProperties =         (collectors
     for (let r = startIndex; r < startIndex + count; r++) {
         let row = sheet.getRow(r);
         if (row != null && row.columns > 0) {
+            let rowError = 0;
             let obj = creator();
             for (let property of properties) {
                 try {
                     property.set(obj, row, r);
                 } catch (e) {
                     collectors.push(e);
+                    rowError++;
                 }
             }
-            result.push(obj);
+            if (!rowError) {
+                result.push(obj);
+            }
         }
     }
     return result;

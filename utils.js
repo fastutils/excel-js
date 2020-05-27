@@ -48,10 +48,12 @@ class ExcelError extends Error {
     }
 }
 class ExcelValueFormatError extends ExcelError {
-    constructor(rowIndex, columnIndex, message) {
+    constructor(rowIndex, columnIndex, value, message) {
         super(`Cell [${formatCellIndex(rowIndex, columnIndex)}] format error:${message instanceof Error ? message.message : message}`);
         this.rowIndex = rowIndex;
         this.columnIndex = columnIndex;
+        this.cellName = formatCellIndex(rowIndex, columnIndex)
+        this.value = value
     }
 }
 class ExcelMultiValueFormatError extends ExcelError {
@@ -147,7 +149,12 @@ const getSheet = (excel, sheetIndex) => {
 const getExcel = (excel) => {
     if (excel instanceof Excel) {
         return excel;
-    } else if (isArrayBuffer(excel) || isString(excel)) {
+    } else if (isArrayBuffer(excel)) {
+        return new Excel(xlsx.read(excel, {
+            cellDates: true,
+            type: "array"
+        }));
+    } else if(isString(excel)) {
         return new Excel(xlsx.readFile(excel, {
             cellDates: true,
         }));
@@ -159,9 +166,9 @@ const getExcel = (excel) => {
 const defaultCreator = t => t;
 const defaultSetter = (t, p) => { };
 const defaultPropertySetter = setter => (t, p, v, r, c) => setter(p, v, r, c);
-const defaultRequiredValidator = required => (t, p, v, r, c) => required && v == null ? new ExcelValueFormatError(r, c, "Can not be null") : null;
+const defaultRequiredValidator = required => (t, p, v, r, c) => required && v == null ? new ExcelValueFormatError(r, c, v, "Can not be null") : null;
 const defaultPropertyValidator = validator => (t, p, v, r, c) => validator(p, v, r, c);
-const defaultPropertyRequiredValidator = required => (p, v, r, c) => required && v == null ? new ExcelValueFormatError(r, c, "Can not be null") : null;
+const defaultPropertyRequiredValidator = required => (p, v, r, c) => required && v == null ? new ExcelValueFormatError(r, c, v, "Can not be null") : null;
 
 module.exports = {
     isString,

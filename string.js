@@ -3,7 +3,7 @@ const PropertyInfo = require('./property');
 
 const forStringByIndexAndSetter =                                 (column, setter) => forStringByIndexAndSetterAndRequired(column, setter, utils.DEFAULT_REQUIRED);
 const forStringByIndexAndSetterAndRequired =                      (column, setter, required) => forStringByIndexAndSetterAndValidator(column, setter, utils.defaultPropertyRequiredValidator(required));
-const forStringByIndexAndSetterAndValidator =                     (column, setter, validator) => forStringByRangeAndSetterAndValidator(column, column, setter, utils.defaultPropertyValidator(validator));
+const forStringByIndexAndSetterAndValidator =                     (column, setter, validator) => forStringByRangeAndCreatorAndReaderAndSetterAndValidator(column, column, utils.defaultCreator, utils.defaultPropertySetter(setter), utils.defaultSetter, utils.defaultPropertyValidator(validator));
 
 const forStringByRangeAndSetter =                                 (minColumn, maxColumn, setter) => forStringByRangeAndSetterAndRequired(minColumn, maxColumn, setter, utils.DEFAULT_REQUIRED);
 const forStringByRangeAndSetterAndRequired =                      (minColumn, maxColumn, setter, required) => forStringByRangeAndSetterAndValidator(minColumn, maxColumn, setter, utils.defaultPropertyRequiredValidator(required));
